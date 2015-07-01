@@ -1,14 +1,26 @@
 package trial.logisticsnetwork.entity;
 
+import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 /**
  * Represents a network with all it's edges.
  */
+@Entity
+@Table(name = "network")
 public class Network {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Integer id;
+
+    @Column(name = "name", nullable = false)
     private String name;
 
+    @OneToMany(mappedBy = "network", cascade = CascadeType.PERSIST)
     private List<NetworkEdge> edges;
 
     public Network() {
@@ -19,10 +31,24 @@ public class Network {
     public Network(String name, List<NetworkEdge> edges) {
         this.name = name;
 
-        if (edges == null)
+        if (edges == null) {
             this.edges = Collections.emptyList();
-        else
-            this.edges = edges;
+        } else {
+            this.edges = new ArrayList<>(edges.size());
+            for (NetworkEdge edge : edges) {
+                edge.setNetwork(this);
+                this.edges.add(edge);
+            }
+
+        }
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -34,6 +60,7 @@ public class Network {
     }
 
     public void add(NetworkEdge edge){
+        edge.setNetwork(this);
         edges.add(edge);
     }
 
@@ -56,8 +83,9 @@ public class Network {
     @Override
     public String toString() {
         return "Network{" +
-                "name='" + name + '\'' +
-                "size='" + edges.size() + '\'' +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", size=" + edges.size() +
                 '}';
     }
 }

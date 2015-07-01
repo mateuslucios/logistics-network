@@ -1,16 +1,33 @@
 package trial.logisticsnetwork.entity;
 
+import javax.persistence.*;
+
 /**
  * Represents an edge or path connecting two nodes in the network.
  *
  * Nodes are represented as strings (source and target)
  */
+@Entity
+@Table(name = "network_edge")
 public class NetworkEdge {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Integer id;
+
+    @Column(name = "source_node", nullable = false)
     private String source;
 
+    @Column(name = "target_node", nullable = false)
     private String target;
 
+    @Column(name = "distance", nullable = false)
     private Double distance;
+
+    @ManyToOne
+    @JoinColumn(name = "network_id", referencedColumnName = "id", nullable = false)
+    private Network network;
 
     public NetworkEdge(){
         distance = 0.0;
@@ -44,6 +61,22 @@ public class NetworkEdge {
 
     public void setDistance(Double distance) {
         this.distance = distance;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Network getNetwork() {
+        return network;
+    }
+
+    public void setNetwork(Network network) {
+        this.network = network;
     }
 
     @Override
