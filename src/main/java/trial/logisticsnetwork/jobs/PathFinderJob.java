@@ -33,33 +33,51 @@ public class PathFinderJob {
 
         if (!networks.isEmpty()) {
             Network network = networks.iterator().next();
-            List<NetworkEdge> edges = network.getEdges();
 
-            List<String> sources = getSources(edges);
-            List<String> targets = getTargets(edges);
+            List<String> sources = getSources(network.getEdges());
+
             List<Path> paths = new ArrayList<>();
 
-            Path path = new Path();
             for (String source : sources) {
-                for (String target : targets) {
-
-                    path = find(source, target);
-
-                    if (path != null) {
-                        paths.add(path);
-                    } else {
-                        List<NetworkEdge> edgesFromSource = findTargets(source);
-                        for (NetworkEdge edge : edgesFromSource) {
-                            Path path1 = find(edge.getTarget(), target);
-
-                        }
-                    }
-                }
+                find(new Path(source), paths);
             }
+
+            logger.debug(paths.toString());
         }
     }
 
-    private Path find(String source, String target){
+    /*private void f(String source, List<Path> paths){
+        List<NetworkEdge> edgesFromSource = findTargets(source);
+
+        for (NetworkEdge edge : edgesFromSource) {
+            Path path = new Path(source, edge.getTarget(), edge.getDistance(), source + "-" + edge.getTarget());
+
+            if (!paths.contains(path))
+                paths.add(path);
+
+            f(edge.getTarget(), paths);
+        }
+    }*/
+
+    private void find(Path source, List<Path> paths){
+        List<NetworkEdge> edgesFromSource = findTargets(source.getCurrent());
+
+        for (NetworkEdge edge : edgesFromSource) {
+            Path path = new Path(
+                    source.getSource(),
+                    edge.getTarget(),
+                    source.getDistance() + edge.getDistance(),
+                    source.getPathDescription() + "-" + edge.getTarget(),
+                    edge.getTarget());
+
+            if (!paths.contains(path))
+                paths.add(path);
+
+            find(path, paths);
+        }
+    }
+
+    /*private Path find(String source, String target) {
         Path path = new Path();
         try {
             NetworkEdge result =
@@ -77,27 +95,32 @@ public class PathFinderJob {
         }
 
         return path;
-    }
+    }*/
+
+    /*private Path find(String source, String target, Path path) {
+        Path newPath = new Path();
+        try {
+            NetworkEdge result =
+                    em.createQuery("select e from NetworkEdge e where e.source = :source and e.target = :target", NetworkEdge.class).
+                            setParameter("source", source).
+                            setParameter("target", target).
+                            getSingleResult();
+
+            //path.setSource(source);
+            newPath.setTarget(target);
+            newPath.setDistance(path.getDistance() + result.getDistance());
+            newPath.setPathDescription(path.getPathDescription() + "-" + target);
+        } catch (NoResultException e) {
+            return null;
+        }
+
+        return newPath;
+    }*/
 
     private List<NetworkEdge> findTargets(String source) {
-        List<NetworkEdge> edgesFromsource =
-                    em.createQuery("select e from NetworkEdge e where e.source = :source", NetworkEdge.class).
-                    setParameter("source", source).
-                    getResultList();
-
-            /*for (NetworkEdge edge : edgesFromsource) {
-                //Path tempPath = find(edge.getTarget(), target, path);
-            }*/
-        return edgesFromsource;
-    }
-
-    private List<String> getTargets(List<NetworkEdge> edges) {
-        List<String> targets = new ArrayList<>();
-        for (NetworkEdge edge : edges) {
-            if (!targets.contains(edge.getTarget()))
-                targets.add(edge.getTarget());
-        }
-        return targets;
+                return em.createQuery("select e from NetworkEdge e where e.source = :source", NetworkEdge.class).
+                        setParameter("source", source).
+                        getResultList();
     }
 
     private List<String> getSources(List<NetworkEdge> edges) {
