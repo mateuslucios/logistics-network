@@ -7,8 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import trial.logisticsnetwork.entity.Edge;
 import trial.logisticsnetwork.entity.Network;
-import trial.logisticsnetwork.entity.NetworkEdge;
 import trial.logisticsnetwork.response.NetworkResponse;
 import trial.logisticsnetwork.service.exception.InvalidDataException;
 
@@ -55,11 +55,11 @@ public class NetworkService {
 
                 List<String> lines = IOUtils.readLines(stream);
 
-                List<NetworkEdge> edges = new ArrayList<>();
+                List<Edge> edges = new ArrayList<>();
 
                 for (String line : lines) {
                     lineCounter++;
-                    NetworkEdge edge = parseLine(line);
+                    Edge edge = parseLine(line);
                     logger.debug(line + " -> " + edge.toString());
                     edges.add(edge);
                 }
@@ -84,10 +84,10 @@ public class NetworkService {
         return new NetworkResponse("Network successfully created");
     }
 
-    private NetworkEdge parseLine(String line) {
+    private Edge parseLine(String line) {
         try {
             String[] parsed = line.split(" ");
-            return new NetworkEdge(parsed[0].trim(), parsed[1].trim(), new Double(parsed[2].trim()));
+            return new Edge(parsed[0].trim(), parsed[1].trim(), new Double(parsed[2].trim()));
         } catch (RuntimeException e) {
             throw new InvalidDataException(e);
         }

@@ -21,7 +21,7 @@ public class Network {
     private String name;
 
     @OneToMany(mappedBy = "network", cascade = CascadeType.PERSIST)
-    private List<NetworkEdge> edges;
+    private List<Edge> edges;
 
     @Column(name = "processed_mark", nullable = false)
     private boolean processed;
@@ -31,14 +31,14 @@ public class Network {
         edges = Collections.emptyList();
     }
 
-    public Network(String name, List<NetworkEdge> edges) {
+    public Network(String name, List<Edge> edges) {
         this.name = name;
 
         if (edges == null) {
             this.edges = Collections.emptyList();
         } else {
             this.edges = new ArrayList<>(edges.size());
-            for (NetworkEdge edge : edges) {
+            for (Edge edge : edges) {
                 edge.setNetwork(this);
                 this.edges.add(edge);
             }
@@ -58,11 +58,11 @@ public class Network {
         return name;
     }
 
-    public List<NetworkEdge> getEdges() {
+    public List<Edge> getEdges() {
         return Collections.unmodifiableList(edges);
     }
 
-    public void add(NetworkEdge edge){
+    public void add(Edge edge){
         edge.setNetwork(this);
         edges.add(edge);
     }

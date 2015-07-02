@@ -9,7 +9,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "network_edge")
-public class NetworkEdge {
+public class Edge {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,11 +29,11 @@ public class NetworkEdge {
     @JoinColumn(name = "network_id", referencedColumnName = "id", nullable = false)
     private Network network;
 
-    public NetworkEdge(){
+    public Edge(){
         distance = 0.0;
     }
 
-    public NetworkEdge(String source, String target, Double distance) {
+    public Edge(String source, String target, Double distance) {
         this.source = source;
         this.target = target;
         this.distance = distance == null ? 0.0 : distance;
@@ -84,7 +84,7 @@ public class NetworkEdge {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        NetworkEdge that = (NetworkEdge) o;
+        Edge that = (Edge) o;
 
         if (!source.equals(that.source)) return false;
         return target.equals(that.target);
@@ -100,7 +100,7 @@ public class NetworkEdge {
 
     @Override
     public String toString() {
-        return "NetworkEdge{" +
+        return "Edge{" +
                 "source='" + source + '\'' +
                 ", target='" + target + '\'' +
                 ", distance=" + distance +

@@ -1,35 +1,63 @@
 package trial.logisticsnetwork.entity;
 
+import javax.persistence.*;
+
 /**
- * Created by mateus on 7/1/15.
+ * Represents a possible
  */
+@Entity
+@Table(name = "network_path")
 public class Path {
 
+    @Id
+    @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "source_node", nullable = false)
     private String source;
 
+    @Column(name = "target_node", nullable = false)
     private String target;
 
-    private String pathDescription;
+    @Column(name = "description", nullable = false)
+    private String description;
 
+    @Column(name = "distance", nullable = false)
     private double distance;
 
+    @ManyToOne
+    @JoinColumn(name = "network_id", referencedColumnName = "id", nullable = false)
+    private Network network;
+
+    @Transient
     private String current;
 
-    /*public Path() {
-    }*/
+    public Path() {
+
+    }
 
     public Path(String source){
         this.source = source;
         this.current = source;
-        this.pathDescription = source;
+        this.description = source;
     }
 
-    public Path(String source, String target, double distance, String pathDescription, String current) {
+    public Path(String source, String target, double distance, String description, String current, Network network) {
         this.source = source;
         this.target = target;
         this.distance = distance;
-        this.pathDescription = pathDescription;
+        this.description = description;
         this.current = current;
+        this.network = network;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getSource() {
@@ -48,19 +76,19 @@ public class Path {
         this.target = target;
     }
 
-    public String getPathDescription() {
-        return pathDescription;
+    public String getDescription() {
+        return description;
     }
 
-    public void setPathDescription(String pathDescription) {
-        this.pathDescription = pathDescription;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public Double getDistance() {
+    public double getDistance() {
         return distance;
     }
 
-    public void setDistance(Double distance) {
+    public void setDistance(double distance) {
         this.distance = distance;
     }
 
@@ -101,7 +129,7 @@ public class Path {
         return "Path{" +
                 "source='" + source + '\'' +
                 ", target='" + target + '\'' +
-                ", pathDescription='" + pathDescription + '\'' +
+                ", description='" + description + '\'' +
                 ", distance=" + distance +
                 '}';
     }

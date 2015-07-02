@@ -13,8 +13,8 @@
         <properties>
             <property name="eclipselink.target-database" value="MySQL" />
             <property name="eclipselink.weaving" value="false" />
-            <property name="eclipselink.logging.level" value="INFO" />
-            <property name="eclipselink.logging.level.sql" value="INFO" />
+            <property name="eclipselink.logging.level" value="Fine" />
+            <property name="eclipselink.logging.level.sql" value="Fine" />
             <property name="eclipselink.logging.parameters" value="true" />
         </properties>
     </persistence-unit>
