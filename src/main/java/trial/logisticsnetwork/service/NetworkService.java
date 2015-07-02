@@ -72,7 +72,7 @@ public class NetworkService {
                 logger.debug("network created " + network);
             } catch (IOException e) {
                 logger.error(e.getMessage(), e);
-                return new NetworkResponse("Unable to processrequest");
+                return new NetworkResponse("Unable to process request");
             } catch (InvalidDataException e) {
                 logger.error(e.getMessage(), e);
                 return new NetworkResponse("Invalid data on row " + lineCounter);

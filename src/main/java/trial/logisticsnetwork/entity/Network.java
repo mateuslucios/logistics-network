@@ -23,6 +23,9 @@ public class Network {
     @OneToMany(mappedBy = "network", cascade = CascadeType.PERSIST)
     private List<NetworkEdge> edges;
 
+    @Column(name = "processed_mark", nullable = false)
+    private boolean processed;
+
     public Network() {
         name = "empty network";
         edges = Collections.emptyList();
@@ -62,6 +65,14 @@ public class Network {
     public void add(NetworkEdge edge){
         edge.setNetwork(this);
         edges.add(edge);
+    }
+
+    public boolean isProcessed() {
+        return processed;
+    }
+
+    public void setProcessed(boolean processed) {
+        this.processed = processed;
     }
 
     @Override

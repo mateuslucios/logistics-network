@@ -3,8 +3,10 @@ create database logistics_network;
 create table network (
     id integer not null auto_increment,
     name varchar(50) not null,
+    processed_mark boolean not null,
     primary key (id),
-    index idx1 (name)
+    index idx1 (name),
+    index idx2 (processed_mark)
 ) engine=innodb;
 
 create table network_edge (
