@@ -67,3 +67,4 @@ Melhorias:
 - Colocar as variáveis em arquivos properties ao invés de escrevê-las no código.
 - Padronizar os objetos `Response` isolando atributos comuns na super classe.
 - Retornar os códigos HTTP corretos de acordo com a resposta, atualmente todos os métodos retornam 200
+- Padronizar validação de campos obrigatoriedade, tamanho, formato e etc
