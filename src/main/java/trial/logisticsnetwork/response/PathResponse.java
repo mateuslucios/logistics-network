@@ -48,4 +48,32 @@ public class PathResponse implements Serializable {
         this.cost = cost;
         this.message = message;
     }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public double getDistance() {
+        return distance;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public String getTarget() {
+        return target;
+    }
+
+    public String getRoute() {
+        return route;
+    }
+
+    public double getRequiredLiters() {
+        return requiredLiters;
+    }
+
+    public double getCost() {
+        return cost;
+    }
 }

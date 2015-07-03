@@ -1,13 +1,15 @@
 package trial.logisticsnetwork.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import trial.logisticsnetwork.entity.Network;
+import trial.logisticsnetwork.repository.NetworkRepository;
+import trial.logisticsnetwork.repository.PathRepository;
 import trial.logisticsnetwork.request.PathRequest;
 import trial.logisticsnetwork.response.PathResponse;
 
-import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-import javax.persistence.PersistenceContext;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -22,34 +24,35 @@ import java.util.List;
 @Path("path")
 public class PathService {
 
-    @PersistenceContext
-    private EntityManager em;
+    private static final Logger logger = LoggerFactory.getLogger(PathService.class);
+
+    @Autowired
+    private PathRepository repository;
+
+    @Autowired
+    private NetworkRepository networkRepository;
 
     @GET
     @Path("{network-name}/{source}/{target}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public PathResponse retrieve(@BeanParam PathRequest pathRequest) {
-
-        if (pathRequest.getAutonomy() < 0.0)
-            return new PathResponse("Autonomy must be positive");
-
-        if (pathRequest.getLiterPrice() < 0.0)
-            return new PathResponse("Autonomy must be positive");
-
         try {
-            Network network = em.createQuery("select n from Network n where n.name = :name", Network.class).
-                    setParameter("name", pathRequest.getNetworkName()).
-                    getSingleResult();
+            if (pathRequest.getAutonomy() < 0.0)
+                return new PathResponse("Autonomy must be positive");
+
+            if (pathRequest.getLiterPrice() < 0.0)
+                return new PathResponse("Liter Price must be positive");
+
+            Network network = networkRepository.findByName(pathRequest.getNetworkName());
+
+            if (network == null)
+                return new PathResponse("Network " + pathRequest.getNetworkName() + " not found");
 
             if (!network.isProcessed())
-                return new PathResponse("This network has not been processed, please try again later.");
+                return new PathResponse("Network " + network.getName() + " has not been processed, please try again later.");
 
             List<trial.logisticsnetwork.entity.Path> paths =
-                    em.createQuery("select p from Path p where p.network = :network and p.source = :source and p.target = :target order by p.distance", trial.logisticsnetwork.entity.Path.class).
-                            setParameter("network", network).
-                            setParameter("source", pathRequest.getSource()).
-                            setParameter("target", pathRequest.getTarget()).
-                            getResultList();
+                    repository.find(network, pathRequest.getSource(), pathRequest.getTarget());
 
             trial.logisticsnetwork.entity.Path shortestPath = paths.iterator().next();
 
@@ -66,8 +69,9 @@ public class PathService {
                     cost,
                     "Path found"
             );
-        } catch (NoResultException e) {
-            return new PathResponse("Network " + pathRequest.getNetworkName() + " not found");
+        } catch (Exception e) {
+            logger.error("Unable to process request", e);
+            return new PathResponse("Unable to process request");
         }
     }
 }

@@ -5,10 +5,12 @@ import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import trial.logisticsnetwork.entity.Edge;
 import trial.logisticsnetwork.entity.Network;
+import trial.logisticsnetwork.repository.NetworkRepository;
 import trial.logisticsnetwork.response.NetworkResponse;
 import trial.logisticsnetwork.service.exception.InvalidDataException;
 
@@ -30,8 +32,8 @@ public class NetworkService {
 
     private final static Logger logger = LoggerFactory.getLogger(NetworkService.class);
 
-    @PersistenceContext
-    private EntityManager em;
+    @Autowired
+    private NetworkRepository repository;
 
     @POST
     @Path("{name}")
@@ -39,49 +41,52 @@ public class NetworkService {
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Transactional
     public NetworkResponse createNetwork(@PathParam("name") String name,
-                                         @FormDataParam("file") InputStream stream,
-                                         @FormDataParam("file") FormDataContentDisposition fileDetail) {
+                                         @FormDataParam("file") InputStream stream) {
         int lineCounter = 0;
+        Network network = null;
+        network = repository.findByName(name);
+
+        if (network != null)
+            return new NetworkResponse("Duplicated network: " + name);
 
         try {
-            em.createQuery("select n from Network n where n.name = :name", Network.class).
-                    setParameter("name", name).
-                    getSingleResult();
+            logger.debug("Network name: " + name);
 
-            return new NetworkResponse("Duplicated network: " + name);
-        } catch (NoResultException nre) {
-            try {
-                logger.debug("Network name: " + name);
+            List<String> lines = IOUtils.readLines(stream);
 
-                List<String> lines = IOUtils.readLines(stream);
+            List<Edge> edges = new ArrayList<>();
 
-                List<Edge> edges = new ArrayList<>();
-
-                for (String line : lines) {
-                    lineCounter++;
-                    Edge edge = parseLine(line);
-                    logger.debug(line + " -> " + edge.toString());
-                    edges.add(edge);
-                }
-
-                if (edges.isEmpty())
-                    throw new InvalidDataException("Invalid data");
-
-                Network network = new Network(name, edges);
-                em.persist(network);
-                logger.debug("network created " + network);
-            } catch (IOException e) {
-                logger.error(e.getMessage(), e);
-                return new NetworkResponse("Unable to process request");
-            } catch (InvalidDataException e) {
-                logger.error(e.getMessage(), e);
-                return new NetworkResponse("Invalid data on row " + lineCounter);
+            for (String line : lines) {
+                lineCounter++;
+                Edge edge = parseLine(line);
+                logger.debug(line + " -> " + edge.toString());
+                edges.add(edge);
             }
+
+            if (edges.isEmpty())
+                throw new InvalidDataException("Invalid data");
+
+            network = new Network(name, edges);
+
+            repository.insert(network);
+
+            logger.debug("network created " + network);
+
+            return new NetworkResponse("Network successfully created");
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+            return new NetworkResponse("Unable to process request");
+        } catch (InvalidDataException e) {
+            logger.error(e.getMessage(), e);
+            return new NetworkResponse("Invalid data on row " + lineCounter);
+        } catch (Exception e) {
+            logger.error("Unable to process request", e);
+            return new NetworkResponse("Unable to process request");
         } finally {
             IOUtils.closeQuietly(stream);
         }
 
-        return new NetworkResponse("Network successfully created");
+
     }
 
     private Edge parseLine(String line) {

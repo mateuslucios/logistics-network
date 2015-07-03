@@ -6,16 +6,20 @@ import org.glassfish.grizzly.servlet.WebappContext;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ServerProperties;
 import org.glassfish.jersey.servlet.ServletContainer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.BindException;
 import java.net.URI;
 import java.net.UnknownHostException;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 public class Main {
+    private static final Logger logger = LoggerFactory.getLogger(Main.class);
+
     public static String WS_WEBAPP_CONTEXT_NAME = "trial-ws";
     public static String WS_ENDPOINT_NAME = "api";
-
     public static String WS_ACCEPTOR_HOST = "localhost";
     public static int WS_ACCEPTOR_PORT = 8080;
 
@@ -57,30 +61,24 @@ public class Main {
 
             System.out.println(String.format("*** Service was set up in %s ***", new Date()));
 
-            /* Sets shutdown hook and iterates'il exit */
             setShutdownHook(webContainer);
 
             while (true) {
                 Thread.sleep(10000);
             }
         } catch (InterruptedException e) {
-            System.err.println("Erro inesperado; servico sera abortado...");
-            e.printStackTrace(System.err);
+            logger.error("Unexpected error. Aborting...", e);
         } catch (UnknownHostException e) {
-            System.err.println(String.format(
-                    "*** ATENCAO *** Endereco [%s] nao pode ser resolvido; servico sera abortado...", e.getMessage()));
-            e.printStackTrace(System.err);
+            logger.error(String.format(
+                    "*** ATTENTION *** Address [%s] cannot be resolved. Aborting...", e.getMessage()));
         } catch (Exception e) {
             if (e.getCause() instanceof BindException) {
-                System.err.println(String.format(
-                        "*** ATENCAO *** Endereco [%s:%s] ja esta sendo usado; servico sera abortado...",
+                logger.error(String.format(
+                        "*** ATTENTION *** Address [%s:%s] already in use. Aborting...",
                         WS_ACCEPTOR_HOST, WS_ACCEPTOR_PORT));
             } else {
-                System.err.println("Erro inesperado; servico sera abortado...");
-                e.printStackTrace(System.err);
+                logger.error("Unexpected error. Aborting...", e);
             }
-        } finally {
-
         }
 
         System.exit(0);
@@ -93,11 +91,10 @@ public class Main {
                 Thread.currentThread().setName("main-shutdown-hook-" + Thread.currentThread().getId());
 
                 try {
-                    webContainer.stop();
+                    webContainer.shutdown(15, TimeUnit.SECONDS);
 
                 } catch (Exception e) {
-                    System.err.println(String.format("*** Unable to stop web container at %s ***", new Date()));
-                    e.printStackTrace(System.err);
+                    logger.error(String.format("*** Unable to stop web container at %s ***", new Date()));
                 }
             }
         }));
