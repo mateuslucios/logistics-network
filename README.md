@@ -1,12 +1,12 @@
 Aplicação para criar, processar e consultar uma malha logística.
 
-O recurso logistics-network expõe o método para upload o arquivo no formato:
-A B 10
-B D 15
-A C 20
-C D 30
-B E 50
-D E 30
+O recurso logistics-network expõe o método para upload o arquivo no formato: <br/>
+A B 10 <br/>
+B D 15 <br/>
+A C 20 <br/>
+C D 30 <br/>
+B E 50 <br/>
+D E 30 <br/>
 
 Representando origem, destino e distancia entre os pontos.
 
@@ -34,10 +34,10 @@ Para criar a base de dados utilize o script:
 - sql/ddl.sql
 
 Para empacotar a apicação execute:
-mvn clean package no diretório raiz. O arquivo logistics-network-1.0-bin.zip será gerado dentro da pasta target.
-Deszipe o arquivo logistics-network-1.0-bin.zip
-Acesse a pasta gerada (logistics-network)
-Execute o comando: java -jar logistics-network-1.0.jar
+mvn clean package no diretório raiz. O arquivo logistics-network-1.0-bin.zip será gerado dentro da pasta target. <br/>
+Deszipe o arquivo logistics-network-1.0-bin.zip <br/>
+Acesse a pasta gerada (logistics-network) <br/>
+Execute o comando: java -jar logistics-network-1.0.jar <br/>
 O grizzly será iniciado e a aplicação responderá por padrão no endereço: localhost:8080
 
 *** PONTOS DE ATENÇÃO ***
