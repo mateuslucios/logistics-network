@@ -5,7 +5,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import sun.nio.ch.Net;
 import trial.logisticsnetwork.entity.Edge;
 import trial.logisticsnetwork.entity.Network;
 import trial.logisticsnetwork.entity.Path;
@@ -14,14 +13,11 @@ import trial.logisticsnetwork.repository.PathRepository;
 import trial.logisticsnetwork.request.PathRequest;
 import trial.logisticsnetwork.response.PathResponse;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.when;
 
 /**

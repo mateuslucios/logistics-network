@@ -37,7 +37,7 @@ public class Path {
 
     }
 
-    public Path(String source){
+    public Path(String source) {
         this.source = source;
         this.current = source;
         this.description = source;

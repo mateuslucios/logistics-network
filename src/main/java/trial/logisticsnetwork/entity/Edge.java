@@ -4,7 +4,7 @@ import javax.persistence.*;
 
 /**
  * Represents an edge or path connecting two nodes in the network.
- *
+ * <p>
  * Nodes are represented as strings (source and target)
  */
 @Entity
@@ -29,7 +29,7 @@ public class Edge {
     @JoinColumn(name = "network_id", referencedColumnName = "id", nullable = false)
     private Network network;
 
-    public Edge(){
+    public Edge() {
         distance = 0.0;
     }
 

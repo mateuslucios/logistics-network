@@ -13,19 +13,19 @@ public class NetworkResponse implements Serializable {
     @XmlElement
     private String message;
 
-    public NetworkResponse(){
+    public NetworkResponse() {
         this("");
     }
 
-    public NetworkResponse(String message){
-        this.message = message;
-    }
-
-    public void setMessage(String message) {
+    public NetworkResponse(String message) {
         this.message = message;
     }
 
     public String getMessage() {
         return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

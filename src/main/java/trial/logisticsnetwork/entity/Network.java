@@ -62,7 +62,7 @@ public class Network {
         return Collections.unmodifiableList(edges);
     }
 
-    public void add(Edge edge){
+    public void add(Edge edge) {
         edge.setNetwork(this);
         edges.add(edge);
     }

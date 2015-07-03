@@ -12,16 +12,16 @@
     http://www.springframework.org/schema/task
 	http://www.springframework.org/schema/task/spring-task-4.1.xsd">
 
-    <context:component-scan  base-package="trial.logisticsnetwork" />
+    <context:component-scan base-package="trial.logisticsnetwork"/>
 
-    <context:annotation-config />
+    <context:annotation-config/>
 
-    <tx:annotation-driven />
+    <tx:annotation-driven/>
 
-    <task:annotation-driven scheduler="scheduler" executor="executor" />
+    <task:annotation-driven scheduler="scheduler" executor="executor"/>
 
     <task:scheduler id="scheduler" pool-size="3"/>
 
-    <task:executor id="executor" pool-size="3" />
+    <task:executor id="executor" pool-size="3"/>
 
 </beans:beans>

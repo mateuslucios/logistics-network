@@ -7,7 +7,7 @@ import org.glassfish.jersey.server.spring.scope.RequestContextFilter;
 
 public class AppResourceConfig extends ResourceConfig {
 
-    public AppResourceConfig(){
+    public AppResourceConfig() {
         register(RequestContextFilter.class);
         register(MultiPartFeature.class);
     }

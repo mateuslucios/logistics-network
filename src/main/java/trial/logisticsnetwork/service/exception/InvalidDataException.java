@@ -5,11 +5,11 @@ package trial.logisticsnetwork.service.exception;
  */
 public class InvalidDataException extends RuntimeException {
 
-    public InvalidDataException(Throwable cause){
+    public InvalidDataException(Throwable cause) {
         super(cause);
     }
 
-    public InvalidDataException(String message){
+    public InvalidDataException(String message) {
         super(message);
     }
 
