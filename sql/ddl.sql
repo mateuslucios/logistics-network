@@ -18,7 +18,7 @@ create table network_edge (
     primary key (id),
     foreign key (network_id) references network(id),
     index idx1 (network_id),
-    index idx2 (source_node)
+    index idx2 (network_id, source_node)
 ) engine=innodb;
 
 create table network_path (

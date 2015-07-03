@@ -33,6 +33,8 @@ public class PathFinderJob {
     @Scheduled(fixedDelay = 10000)
     public void findPaths() {
 
+        long now = System.currentTimeMillis();
+
         List<Network> networks = em.createQuery("select n from Network n where n.processed = false", Network.class).getResultList();
 
         if (!networks.isEmpty()) {
@@ -62,11 +64,13 @@ public class PathFinderJob {
             logger.info(paths.size() + " new paths were found for " + network.toString());
 
             network.setProcessed(true);
+
+            logger.info("Network " + network.getName() + " took " + (System.currentTimeMillis() - now) + "ms to be processed");
         }
     }
 
     private void find(Path source, List<Path> paths, Network network) {
-        List<Edge> edgesFromSource = findTargets(source.getCurrent());
+        List<Edge> edgesFromSource = findTargets(source.getCurrent(), network);
 
         for (Edge edge : edgesFromSource) {
             Path path = new Path(
@@ -84,8 +88,9 @@ public class PathFinderJob {
         }
     }
 
-    private List<Edge> findTargets(String source) {
-        return em.createQuery("select e from Edge e where e.source = :source", Edge.class).
+    private List<Edge> findTargets(String source, Network network) {
+        return em.createQuery("select e from Edge e where e.network = :network and e.source = :source", Edge.class).
+                setParameter("network", network).
                 setParameter("source", source).
                 getResultList();
     }

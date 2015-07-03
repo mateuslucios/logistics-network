@@ -4,3 +4,13 @@ A C 20
 C D 30
 B E 50
 D E 30
+E F 10
+F G 20
+G H 30
+H I 10
+I J 20
+J K 30
+D H 10
+C G 20
+B F 40
+A E 70
