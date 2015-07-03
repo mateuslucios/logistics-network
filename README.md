@@ -38,15 +38,17 @@ As principais tecnologias utilizadas foram:
 Para criar a base de dados utilize o script: 
 - `sql/ddl.sql`
 
+*Talvez seja necessário ajustar o tamanho das colunas `varchar` ou a precisão das colunas `decimal` dependendo da massa de teste*
+
 <p>Para empacotar a apicação execute:</p>
-1. mvn clean package no diretório raiz. O arquivo `logistics-network-1.0-bin.zip` será gerado dentro da pasta target.
+1. `mvn clean package` no diretório raiz. O arquivo `logistics-network-1.0-bin.zip` será gerado dentro da pasta target.
 2. Deszipe o arquivo `logistics-network-1.0-bin.zip`
 3. Acesse a pasta gerada `(logistics-network)` <br/>
 4. Execute o comando: `java -jar logistics-network-1.0.jar`
 
 O grizzly será iniciado e a aplicação responderá por padrão no endereço: `http://localhost:8080`
 
-*** PONTOS DE ATENÇÃO ***
+*** **PONTOS DE ATENÇÃO** ***
 <p>Os seguintes pontos necessitam alteração:</p>
 Caminho do log: 
 - Altere o caminho no arquivo `src/main/resources/logback.xml`
@@ -65,7 +67,3 @@ Melhorias:
 - Colocar as variáveis em arquivos properties ao invés de escrevê-las no código.
 - Padronizar os objetos `Response` isolando atributos comuns na super classe.
 - Retornar os códigos HTTP corretos de acordo com a resposta, atualmente todos os métodos retornam 200
-
-
-
-
