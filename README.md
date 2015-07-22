@@ -68,3 +68,4 @@ Melhorias:
 - Padronizar os objetos `Response` isolando atributos comuns na super classe.
 - Retornar os códigos HTTP corretos de acordo com a resposta, atualmente todos os métodos retornam 200
 - Padronizar validação de campos obrigatoriedade, tamanho, formato e etc
+- A tabela `Path` armazena todos os caminhos possíveis entre os pontos `X` e `Y`, ela poderia armazenas apenas o caminho mais curto, minimizando a quantidade de dados e otimizando o acesso.
