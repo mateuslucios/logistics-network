@@ -12,7 +12,9 @@ import trial.logisticsnetwork.entity.Path;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Path Finder Job.
@@ -42,7 +44,7 @@ public class PathFinderJob {
 
             List<String> sources = getSources(network.getEdges());
 
-            List<Path> paths = new ArrayList<>();
+            Map<String, Path> paths = new HashMap<>();
 
             for (String source : sources) {
                 find(new Path(source), paths, network);
@@ -54,9 +56,10 @@ public class PathFinderJob {
 
             logger.info(count + " paths were removed from " + network.toString());
 
-            for (int i = 0; i < paths.size(); i++) {
-                Path path = paths.get(i);
-                em.persist(path);
+            int i = 0;
+            for (Map.Entry<String, Path> entry : paths.entrySet()) {
+                i++;
+                em.persist(entry.getValue());
                 if (i % 100 == 0) // avoid filling up the entity manager
                     em.flush();
             }
@@ -69,7 +72,7 @@ public class PathFinderJob {
         }
     }
 
-    private void find(Path source, List<Path> paths, Network network) {
+    private void find(Path source, Map<String, Path> paths, Network network) {
         List<Edge> edgesFromSource = findTargets(source.getCurrent(), network);
 
         for (Edge edge : edgesFromSource) {
@@ -81,8 +84,19 @@ public class PathFinderJob {
                     edge.getTarget(),
                     network);
 
-            if (!paths.contains(path))
-                paths.add(path);
+            String key = path.getSource() + path.getTarget();
+
+            if (!paths.containsKey(key)) {
+                paths.put(key, path);
+            } else {
+                // check and keep only the shortest path.
+                Path current = paths.get(key);
+                if (current.getDistance() > path.getDistance()){
+                    Path previous = paths.remove(key);
+                    paths.put(key, path);
+                    logger.debug(String.format("Exchanging paths: previous=%s, new=%s", previous, path));
+                }
+            }
 
             find(path, paths, network);
         }

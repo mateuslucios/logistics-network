@@ -35,26 +35,6 @@ public class PathServiceTest {
     @Mock
     private PathRepository pathRepository;
 
-
-    /*
-    *
-    * if (pathRequest.getAutonomy() < 0.0)
-                return new PathResponse("Autonomy must be positive");
-
-            if (pathRequest.getLiterPrice() < 0.0)
-                return new PathResponse("Liter Price must be positive");
-
-            Network network = networkRepository.findByName(pathRequest.getNetworkName());
-
-            if (network == null)
-                return new PathResponse("Network " + pathRequest.getNetworkName() + " not found");
-
-            if (!network.isProcessed())
-                return new PathResponse("This network has not been processed, please try again later.");
-    *
-    */
-
-
     @Test
     public void testInvalidAutonomy() throws Exception {
         PathRequest request = new PathRequest();

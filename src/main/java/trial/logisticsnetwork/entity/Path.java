@@ -107,7 +107,6 @@ public class Path {
 
         Path path = (Path) o;
 
-        if (Double.compare(path.distance, distance) != 0) return false;
         if (!source.equals(path.source)) return false;
         return target.equals(path.target);
 
@@ -115,12 +114,8 @@ public class Path {
 
     @Override
     public int hashCode() {
-        int result;
-        long temp;
-        result = source.hashCode();
+        int result = source.hashCode();
         result = 31 * result + target.hashCode();
-        temp = Double.doubleToLongBits(distance);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
         return result;
     }
 
